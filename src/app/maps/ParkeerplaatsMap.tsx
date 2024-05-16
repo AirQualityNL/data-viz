@@ -83,39 +83,39 @@ export const ParkeerplaatsMap = () => {
     }
   }, [complete, map]);
 
-  if (data.length > 1500) {
-    return (
-      <>
-        {clusters.map((cluster, clusterIndex) => (
-          <Marker key={clusterIndex} position={[cluster.lat, cluster.lon]}>
-            {cluster.parkingSpaces.length}
-            <Popup>
-              <div>
-                <p>Parking: {cluster.parkingSpaces.length}</p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </>
-    );
-  } else {
-    return (
-      <>
-        {data.map((item, index) => (
-          <Marker
-            key={index}
-            position={[item.geo_point_2d.lat, item.geo_point_2d.lon]}
-          >
-            <Popup>
-              <div>
-                <p>Straat: {item.straat}</p>
-                <p>Type: {item.type_en_merk}</p>
-                <p>Aantal: {item.aantal}</p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </>
-    );
-  }
+  return (
+    <>
+      {data.length > 750 ? (
+        <>
+          {clusters.map((cluster, clusterIndex) => (
+            <Marker key={clusterIndex} position={[cluster.lat, cluster.lon]}>
+              {cluster.parkingSpaces.length}
+              <Popup>
+                <div>
+                  <p>Parking: {cluster.parkingSpaces.length}</p>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </>
+      ) : (
+        <>
+          {data.map((item, index) => (
+            <Marker
+              key={index}
+              position={[item.geo_point_2d.lat, item.geo_point_2d.lon]}
+            >
+              <Popup>
+                <div>
+                  <p>Straat: {item.straat}</p>
+                  <p>Type: {item.type_en_merk}</p>
+                  <p>Aantal: {item.aantal}</p>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </>
+      )}
+    </>
+  );
 };
