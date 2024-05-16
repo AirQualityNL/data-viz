@@ -1,25 +1,24 @@
-'use client'
-
+"use client";
+import "leaflet/dist/leaflet.css";
 import Image from "next/image";
 
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 export default function Home() {
-  const position = [51.505, -0.09]
+  const position = [51.505, -0.09];
 
   return (
-    <main className="">
-      {/* <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+    <div>
+      <MapContainer
+        center={[51.4416, 5.4697]}
+        zoom={12}
+        style={{ height: "400px", width: "100%" }}
+      >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </MapContainer>, */}
-    </main>
+      </MapContainer>
+    </div>
   );
 }
