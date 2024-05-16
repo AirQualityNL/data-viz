@@ -1,7 +1,7 @@
 "use client";
-import "leaflet/dist/leaflet.css";
-
 import { MapContainer, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { ParkeerplaatsMap } from "./maps/ParkeerplaatsMap";
 
 export default function Home() {
   return (
@@ -11,6 +11,7 @@ export default function Home() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+        <ParkeerplaatsMap />
       </MapContainer>
     </div>
   );
