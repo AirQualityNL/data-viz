@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="w-full h-screen grid-flow-row">
       <div className="h-16 flex justify-center items-center">
-        <h1 className="text-2xl font-bold text-center">Title place holder</h1>
+        <h1 className="text-4xl font-bold text-center">Title place holder</h1>
       </div>
       <div className="flex justify-center w-full h-4/6">
         <MapContainer
