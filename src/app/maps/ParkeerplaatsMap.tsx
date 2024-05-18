@@ -41,7 +41,7 @@ export const ParkeerplaatsMap = () => {
 
       const bounds = map.getBounds();
       const gridSize = 0.02; // Adjust based on desired clustering level
-      const grid = {};
+      const grid: any = {};
 
       // Assign parking spaces to grid cells
       complete.forEach((parkingSpace) => {
