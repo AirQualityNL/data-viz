@@ -16,6 +16,7 @@ const MainMap = () => {
     const [displayPM25, setDisplayPM25] = useState<boolean>(true);
     const [displayPM10, setDisplayPM10] = useState<boolean>(true);
     const [displayNO2, setDisplayNO2] = useState<boolean>(true);
+    const [displayHeatmap, setDisplayHeatmap] = useState<boolean>(false);
 
     return (
         <div className="h-screen flex">
@@ -61,6 +62,12 @@ const MainMap = () => {
                             get={displayNO2}
                             set={setDisplayNO2}
                         />
+                        <OptionsButton
+                            id="display heatmap"
+                            display_name="display heatmap"
+                            get={displayHeatmap}
+                            set={setDisplayHeatmap}
+                        />
                     </>
                 )}
             </div>
@@ -77,6 +84,7 @@ const MainMap = () => {
                             displayPM25={displayPM25}
                             displayPM10={displayPM10}
                             displayNO2={displayNO2}
+                            displayHeatmap={displayHeatmap}
                         />
                     )}
                 </MapContainer>

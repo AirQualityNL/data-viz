@@ -4,30 +4,25 @@ import { Pollutant } from "@/app/interfaces/pollutants"
 import pollutants from "../../data/pollutants.json";
 import { HeatmapLayerFactory } from "@vgrid/react-leaflet-heatmap-layer";
 
-interface Props {
-  displayPM1: boolean;
-  displayPM25: boolean;
-  displayPM10: boolean;
-  displayNO2: boolean;
-}
 
-interface Props {
+interface PollutantMapProps {
   displayPM1: boolean;
   displayPM25: boolean;
   displayPM10: boolean;
   displayNO2: boolean;
+  displayHeatmap: boolean;
 }
 
 const HeatmapLayer = HeatmapLayerFactory<[number, number, number]>()
 
-export const PollutantMap: React.FC<Props> = ({
+export const PollutantMap: React.FC<PollutantMapProps> = ({
   displayPM1,
   displayPM25,
   displayPM10,
   displayNO2,
+  displayHeatmap
 }) => {
   const [pollutantData, setPollutantData] = useState<Pollutant[]>([]);
-  const map = useMap();
 
   useEffect(() => {
     setPollutantData(pollutants as unknown as Pollutant[]);
@@ -60,18 +55,20 @@ export const PollutantMap: React.FC<Props> = ({
             </Popup>
           </Marker>
         ))}
-      <HeatmapLayer
-        fitBoundsOnLoad
-        fitBoundsOnUpdate
-        points={pollutantData.map((pollutant: any) => [
-          pollutant.Latitude,
-          pollutant.Longitude,
-          pollutant["PM2.5 Average"],
-        ])}
-        longitudeExtractor={m => m[1]}
-        latitudeExtractor={m => m[0]}
-        intensityExtractor={m => parseFloat(m[2] as any)}
-      />
+      {displayHeatmap &&
+        <HeatmapLayer
+          fitBoundsOnLoad
+          fitBoundsOnUpdate
+          points={pollutantData.map((pollutant: any) => [
+            pollutant.Latitude,
+            pollutant.Longitude,
+            pollutant["PM2.5 Average"],
+          ])}
+          longitudeExtractor={m => m[1]}
+          latitudeExtractor={m => m[0]}
+          intensityExtractor={m => parseFloat(m[2] as any)}
+        />
+      }
     </>
   );
 };
