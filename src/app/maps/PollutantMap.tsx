@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Marker, Popup, useMap } from "react-leaflet";
+import { FeatureGroup, LayersControl, Marker, Popup, useMap } from "react-leaflet";
 import { Pollutant } from "@/app/interfaces/pollutants"
 import pollutants from "../../data/pollutants.json";
+import { HeatmapLayerFactory } from "@vgrid/react-leaflet-heatmap-layer";
 
 interface Props {
   displayPM1: boolean;
@@ -16,6 +17,8 @@ interface Props {
   displayPM10: boolean;
   displayNO2: boolean;
 }
+
+const HeatmapLayer = HeatmapLayerFactory<[number, number, number]>()
 
 export const PollutantMap: React.FC<Props> = ({
   displayPM1,
@@ -57,6 +60,18 @@ export const PollutantMap: React.FC<Props> = ({
             </Popup>
           </Marker>
         ))}
+      <HeatmapLayer
+        fitBoundsOnLoad
+        fitBoundsOnUpdate
+        points={pollutantData.map((pollutant: any) => [
+          pollutant.Latitude,
+          pollutant.Longitude,
+          pollutant["PM2.5 Average"],
+        ])}
+        longitudeExtractor={m => m[1]}
+        latitudeExtractor={m => m[0]}
+        intensityExtractor={m => parseFloat(m[2] as any)}
+      />
     </>
   );
 };

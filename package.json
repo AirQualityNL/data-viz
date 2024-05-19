@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vgrid/react-leaflet-heatmap-layer": "^4.0.3",
     "leaflet": "^1.9.4",
     "next": "14.2.3",
     "react": "^18",
