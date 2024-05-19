@@ -22,6 +22,7 @@ export const OptionsButton = ({
         name={display_name}
         onChange={() => set(!get)}
         className="form-checkbox h-5 w-5 text-blue-600"
+        checked={get}
       />
     </div>
   );
