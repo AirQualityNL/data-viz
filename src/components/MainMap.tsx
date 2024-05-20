@@ -10,11 +10,28 @@ import "leaflet/dist/leaflet.css";
 const MainMap = () => {
   const [displayParkingSpaces, setDisplayParkingSpaces] =
     useState<boolean>(false);
-  const geoJsonStyle = {
-    color: "blue",
-    weight: 0.75,
-    fillOpacity: 0.15,
+
+  const [selectedFeature, setSelectedFeature] = useState(null);
+
+  const onEachFeature = (feature, layer) => {
+    layer.on({
+      click: (e) => {
+        const district_name = feature.properties.name as string;
+        setSelectedFeature(feature);
+      },
+    });
   };
+
+  const style = (feature) => {
+    return {
+      fillColor: feature === selectedFeature ? "red" : "blue",
+      weight: 1,
+      opacity: 1,
+      color: "white",
+      fillOpacity: 0.5,
+    };
+  };
+
   return (
     <div className="h-screen flex">
       <div className="w-1/5 bg-gray-100 p-3">
@@ -34,7 +51,11 @@ const MainMap = () => {
           />
           {displayParkingSpaces && <ParkeerplaatsMap />}
           {geoJsonData && (
-            <GeoJSON data={geoJsonData as any} style={geoJsonStyle} />
+            <GeoJSON
+              data={geoJsonData as any}
+              style={style}
+              onEachFeature={onEachFeature}
+            />
           )}
         </MapContainer>
       </div>
