@@ -6,10 +6,15 @@ import { useState } from "react";
 import { OptionsButton } from "./OptionsButton";
 import geoJsonData from "../app/data/eindhoven_district";
 import "leaflet/dist/leaflet.css";
+
 const MainMap = () => {
   const [displayParkingSpaces, setDisplayParkingSpaces] =
     useState<boolean>(false);
-
+  const geoJsonStyle = {
+    color: "blue",
+    weight: 0.75,
+    fillOpacity: 0.15,
+  };
   return (
     <div className="h-screen flex">
       <div className="w-1/5 bg-gray-100 p-3">
@@ -28,7 +33,9 @@ const MainMap = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {displayParkingSpaces && <ParkeerplaatsMap />}
-          {geoJsonData && <GeoJSON data={geoJsonData as any} />}
+          {geoJsonData && (
+            <GeoJSON data={geoJsonData as any} style={geoJsonStyle} />
+          )}
         </MapContainer>
       </div>
     </div>
