@@ -28,7 +28,7 @@ const MainMap = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {displayParkingSpaces && <ParkeerplaatsMap />}
-          {geoJsonData && <GeoJSON data={geoJsonData} />}
+          {geoJsonData && <GeoJSON data={geoJsonData as any} />}
         </MapContainer>
       </div>
     </div>
