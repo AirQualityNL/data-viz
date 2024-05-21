@@ -17,6 +17,8 @@ const MainMap = () => {
 
   const [selectedFeature, setSelectedFeature] =
     useState<geojson.Feature | null>(null);
+  const [displayDistrictSpaces, setDisplayDistrictSpaces] =
+    useState<boolean>(false);
   const [displayPollutants, setDisplayPollutants] = useState<boolean>(false);
   const [displayPM1, setDisplayPM1] = useState<boolean>(true);
   const [displayPM25, setDisplayPM25] = useState<boolean>(true);
@@ -48,6 +50,12 @@ const MainMap = () => {
     <div className="h-screen flex">
       <div className="w-1/5 bg-gray-100 p-3">
         <h2 className="text-lg font-semibold mb-4">Options</h2>
+        <OptionsButton
+          id="display districts"
+          display_name="display districts"
+          get={displayDistrictSpaces}
+          set={setDisplayDistrictSpaces}
+        />
         <OptionsButton
           id="display parking spaces"
           display_name="display parking spaces"
@@ -121,7 +129,7 @@ const MainMap = () => {
             />
           )}
           {displayTrashcans && <TrashcanMap />}
-          {geoJsonData && (
+          {displayDistrictSpaces && geoJsonData && (
             <GeoJSON
               data={geoJsonData as any}
               style={style}
