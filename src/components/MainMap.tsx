@@ -1,15 +1,39 @@
-'use client';
+"use client";
 
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { ParkeerplaatsMap } from "../app/maps/ParkeerplaatsMap";
 import { useState } from "react";
 import { OptionsButton } from "./OptionsButton";
-
+import geoJsonData from "../app/data/eindhoven_district";
 import "leaflet/dist/leaflet.css";
 import { PollutantMap } from "@/app/maps/PollutantMap";
 
 const MainMap = () => {
-    const [displayParkingSpaces, setDisplayParkingSpaces] =
+  const [displayParkingSpaces, setDisplayParkingSpaces] =
+    useState<boolean>(false);
+
+  const [selectedFeature, setSelectedFeature] = useState(null);
+
+  const onEachFeature = (feature, layer) => {
+    layer.on({
+      click: (e) => {
+        const district_name = feature.properties.name as string;
+        setSelectedFeature(feature);
+      },
+    });
+  };
+
+  const style = (feature) => {
+    return {
+      fillColor: feature === selectedFeature ? "red" : "blue",
+      weight: 1,
+      opacity: 1,
+      color: "white",
+      fillOpacity: 0.5,
+    };
+  };
+  
+  const [displayParkingSpaces, setDisplayParkingSpaces] =
         useState<boolean>(false);
     const [displayPollutants, setDisplayPollutants] = useState<boolean>(false);
     const [displayPM1, setDisplayPM1] = useState<boolean>(true);
@@ -87,11 +111,17 @@ const MainMap = () => {
                             displayHeatmap={displayHeatmap}
                         />
                     )}
+                    {geoJsonData && (
+                      <GeoJSON
+                        data={geoJsonData as any}
+                        style={style}
+                        onEachFeature={onEachFeature}
+                      />
+                    )}
                 </MapContainer>
             </div>
         </div>
 
-    );
 };
 
 export default MainMap;
