@@ -11,6 +11,7 @@
   "dependencies": {
     "@vgrid/react-leaflet-heatmap-layer": "^4.0.3",
     "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",

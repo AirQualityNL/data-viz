@@ -9,6 +9,7 @@ import "leaflet/dist/leaflet.css";
 import { PollutantMap } from "@/app/maps/PollutantMap";
 import { Layer } from "leaflet";
 import * as geojson from "geojson";
+import { TrashcanMap } from "@/app/maps/TrashcanMap";
 
 const MainMap = () => {
   const [displayParkingSpaces, setDisplayParkingSpaces] =
@@ -22,6 +23,8 @@ const MainMap = () => {
   const [displayPM10, setDisplayPM10] = useState<boolean>(true);
   const [displayNO2, setDisplayNO2] = useState<boolean>(true);
   const [displayHeatmap, setDisplayHeatmap] = useState<boolean>(false);
+
+  const [displayTrashcans, setDisplayTrashcans] = useState<boolean>(false);
 
   const onEachFeature = (feature: geojson.Feature, layer: Layer) => {
     layer.on({
@@ -56,6 +59,13 @@ const MainMap = () => {
           display_name="display pollutants"
           get={displayPollutants}
           set={setDisplayPollutants}
+        />
+
+        <OptionsButton
+          id="display trashcan"
+          display_name="display trashcan"
+          get={displayTrashcans}
+          set={setDisplayTrashcans}
         />
 
         {displayPollutants && (
@@ -110,6 +120,7 @@ const MainMap = () => {
               displayHeatmap={displayHeatmap}
             />
           )}
+          {displayTrashcans && <TrashcanMap />}
           {geoJsonData && (
             <GeoJSON
               data={geoJsonData as any}
