@@ -1,74 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { FeatureGroup, LayersControl, Marker, Popup, useMap } from "react-leaflet";
-import { Pollutant } from "@/app/interfaces/pollutants"
-import pollutants from "../../data/pollutants.json";
 import { HeatmapLayerFactory } from "@vgrid/react-leaflet-heatmap-layer";
-
+import pollutants from "../../data/pollutants.json";
+import { Pollutant } from "@/app/interfaces/pollutants";
 
 interface PollutantMapProps {
   displayPM1: boolean;
   displayPM25: boolean;
   displayPM10: boolean;
   displayNO2: boolean;
-  displayHeatmap: boolean;
 }
 
-const HeatmapLayer = HeatmapLayerFactory<[number, number, number]>()
+const HeatmapLayer = HeatmapLayerFactory<[number, number, number]>();
 
 export const PollutantMap: React.FC<PollutantMapProps> = ({
   displayPM1,
   displayPM25,
   displayPM10,
-  displayNO2,
-  displayHeatmap
+  displayNO2
 }) => {
   const [pollutantData, setPollutantData] = useState<Pollutant[]>([]);
+  const [heatmapPoints, setHeatmapPoints] = useState<[number, number, number][]>([]);
 
   useEffect(() => {
     setPollutantData(pollutants as unknown as Pollutant[]);
   }, []);
 
+  useEffect(() => {
+    const points = pollutantData.flatMap((pollutant) => {
+      const pointsArray: [number, number, ][] = [];
+      if (displayPM1 && pollutant["PM1 Average"]) {
+        pointsArray.push([pollutant.Latitude, pollutant.Longitude, pollutant["PM1 Average"]]);
+      }
+      if (displayPM25 && pollutant["PM2.5 Average"]) {
+        pointsArray.push([pollutant.Latitude, pollutant.Longitude, pollutant["PM2.5 Average"]]);
+      }
+      if (displayPM10 && pollutant["PM10 Average"]) {
+        pointsArray.push([pollutant.Latitude, pollutant.Longitude, pollutant["PM10 Average"]]);
+      }
+      if (displayNO2 && pollutant["NO2 Average"]) {
+        pointsArray.push([pollutant.Latitude, pollutant.Longitude, pollutant["NO2 Average"]]);
+      }
+      return pointsArray;
+    });
+
+    setHeatmapPoints(points);
+  }, [displayPM1, displayPM25, displayPM10, displayNO2, pollutantData]);
+
   return (
     <>
-      {pollutantData
-        .filter((pollutant: any) => {
-          return (
-            (displayPM1 && pollutant["PM1 Average"]) ||
-            (displayPM25 && pollutant["PM2.5 Average"]) ||
-            (displayPM10 && pollutant["PM10 Average"]) ||
-            (displayNO2 && pollutant["NO2 Average"])
-          );
-        })
-        .map((pollutant: any, index) => (
-          <Marker
-            key={index}
-            position={[pollutant.Latitude, pollutant.Longitude]}
-          >
-            <Popup>
-              <div>
-                <p>Station: {pollutant.Station}</p>
-                {displayPM1 && <p>PM1: {pollutant["PM1 Average"]}</p>}
-                {displayPM25 && <p>PM2.5: {pollutant["PM2.5 Average"]}</p>}
-                {displayPM10 && <p>PM10: {pollutant["PM10 Average"]}</p>}
-                {displayNO2 && <p>NO2: {pollutant["NO2 Average"]}</p>}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      {displayHeatmap &&
-        <HeatmapLayer
+      <HeatmapLayer
           fitBoundsOnLoad
           fitBoundsOnUpdate
-          points={pollutantData.map((pollutant: any) => [
-            pollutant.Latitude,
-            pollutant.Longitude,
-            pollutant["PM2.5 Average"],
-          ])}
-          longitudeExtractor={m => m[1]}
-          latitudeExtractor={m => m[0]}
-          intensityExtractor={m => parseFloat(m[2] as any)}
+          points={heatmapPoints}
+          longitudeExtractor={(m) => m[1]}
+          latitudeExtractor={(m) => m[0]}
+          intensityExtractor={(m) => parseFloat(m[2].toString())}
         />
-      }
     </>
   );
 };
