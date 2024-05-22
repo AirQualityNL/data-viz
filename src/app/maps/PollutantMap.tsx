@@ -49,8 +49,6 @@ export const PollutantMap: React.FC<PollutantMapProps> = ({
   return (
     <>
       <HeatmapLayer
-          fitBoundsOnLoad
-          fitBoundsOnUpdate
           points={heatmapPoints}
           longitudeExtractor={(m) => m[1]}
           latitudeExtractor={(m) => m[0]}
