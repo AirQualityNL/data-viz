@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { ParkeerplaatsMap } from "../app/maps/ParkeerplaatsMap";
 import { useState } from "react";
 import { OptionsButton } from "./OptionsButton";
+import { RadioButton } from "./RadioButton";
 import geoJsonData from "../app/data/eindhoven_district";
 import "leaflet/dist/leaflet.css";
 import { PollutantMap } from "@/app/maps/PollutantMap";
@@ -24,7 +25,7 @@ const MainMap = () => {
   const [displayPM25, setDisplayPM25] = useState<boolean>(true);
   const [displayPM10, setDisplayPM10] = useState<boolean>(true);
   const [displayNO2, setDisplayNO2] = useState<boolean>(true);
-  const [displayHeatmap, setDisplayHeatmap] = useState<boolean>(false);
+  const [selectedPollutant, setSelectedPollutant] = useState<string>("PM1");
 
   const [displayTrashcans, setDisplayTrashcans] = useState<boolean>(false);
 
@@ -79,35 +80,33 @@ const MainMap = () => {
         {displayPollutants && (
           <>
             <h3 className="text-sm font-semibold mt-4">Pollutants</h3>
-            <OptionsButton
+            <RadioButton
               id="display PM1"
               display_name="display PM1"
-              get={displayPM1}
-              set={setDisplayPM1}
+              value="PM1"
+              selectedValue={selectedPollutant}
+              onChange={setSelectedPollutant}
             />
-            <OptionsButton
+            <RadioButton
               id="display PM2.5"
               display_name="display PM2.5"
-              get={displayPM25}
-              set={setDisplayPM25}
+              value="PM2.5"
+              selectedValue={selectedPollutant}
+              onChange={setSelectedPollutant}
             />
-            <OptionsButton
+            <RadioButton
               id="display PM10"
               display_name="display PM10"
-              get={displayPM10}
-              set={setDisplayPM10}
+              value="PM10"
+              selectedValue={selectedPollutant}
+              onChange={setSelectedPollutant}
             />
-            <OptionsButton
+            <RadioButton
               id="display NO2"
               display_name="display NO2"
-              get={displayNO2}
-              set={setDisplayNO2}
-            />
-            <OptionsButton
-              id="display heatmap"
-              display_name="display heatmap"
-              get={displayHeatmap}
-              set={setDisplayHeatmap}
+              value="NO2"
+              selectedValue={selectedPollutant}
+              onChange={setSelectedPollutant}
             />
           </>
         )}
@@ -121,11 +120,10 @@ const MainMap = () => {
           {displayParkingSpaces && <ParkeerplaatsMap />}
           {displayPollutants && (
             <PollutantMap
-              displayPM1={displayPM1}
-              displayPM25={displayPM25}
-              displayPM10={displayPM10}
-              displayNO2={displayNO2}
-              displayHeatmap={displayHeatmap}
+              displayPM1={selectedPollutant === "PM1" ? displayPM1 : false}
+              displayPM25={selectedPollutant === "PM2.5" ? displayPM25 : false}
+              displayPM10={selectedPollutant === "PM10" ? displayPM10 : false}
+              displayNO2={selectedPollutant === "NO2" ? displayNO2 : false}
             />
           )}
           {displayTrashcans && <TrashcanMap />}
