@@ -10,6 +10,11 @@ interface ParkeerplaatsCluster {
   parkingSpaces: Parkeerplaats[];
 }
 
+const parkingSpaceIcon = new L.Icon({
+  iconUrl: "/logos/parking.svg",
+  iconSize: [38, 38],
+});
+
 export const ParkeerplaatsMap = () => {
   const [data, setData] = useState<Parkeerplaats[]>([]);
   const [complete, setComplete] = useState<Parkeerplaats[]>([]);
@@ -24,7 +29,7 @@ export const ParkeerplaatsMap = () => {
     const updateMarkers = () => {
       const bounds = map.getBounds();
       const filteredData = complete.filter((item: Parkeerplaats) =>
-        bounds.contains([item.geo_point_2d.lat, item.geo_point_2d.lon]),
+        bounds.contains([item.geo_point_2d.lat, item.geo_point_2d.lon])
       );
       setData(filteredData);
     };
@@ -46,10 +51,10 @@ export const ParkeerplaatsMap = () => {
       // Assign parking spaces to grid cells
       complete.forEach((parkingSpace) => {
         const gridX = Math.floor(
-          (parkingSpace.geo_point_2d.lat - bounds.getSouth()) / gridSize,
+          (parkingSpace.geo_point_2d.lat - bounds.getSouth()) / gridSize
         );
         const gridY = Math.floor(
-          (parkingSpace.geo_point_2d.lon - bounds.getWest()) / gridSize,
+          (parkingSpace.geo_point_2d.lon - bounds.getWest()) / gridSize
         );
         const key = `${gridX}_${gridY}`;
         if (!grid[key]) {
@@ -88,7 +93,11 @@ export const ParkeerplaatsMap = () => {
       {data.length > 750 ? (
         <>
           {clusters.map((cluster, clusterIndex) => (
-            <Marker key={clusterIndex} position={[cluster.lat, cluster.lon]}>
+            <Marker
+              icon={parkingSpaceIcon}
+              key={clusterIndex}
+              position={[cluster.lat, cluster.lon]}
+            >
               {cluster.parkingSpaces.length}
               <Popup>
                 <div>
@@ -102,6 +111,7 @@ export const ParkeerplaatsMap = () => {
         <>
           {data.map((item, index) => (
             <Marker
+              icon={parkingSpaceIcon}
               key={index}
               position={[item.geo_point_2d.lat, item.geo_point_2d.lon]}
             >

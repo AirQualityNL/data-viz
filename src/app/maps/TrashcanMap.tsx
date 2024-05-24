@@ -11,7 +11,7 @@ interface TrashcansCluster {
 }
 
 const iconTrashBin = new L.Icon({
-  iconUrl: "/logos/trashbin.png",
+  iconUrl: "/logos/trashbin.svg",
   iconSize: [38, 38],
 });
 
