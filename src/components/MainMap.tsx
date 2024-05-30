@@ -2,7 +2,7 @@
 
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { ParkeerplaatsMap } from "../app/maps/ParkeerplaatsMap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OptionsButton } from "./OptionsButton";
 import { RadioButton } from "./RadioButton";
 import geoJsonData from "../app/data/eindhoven_district";
@@ -12,14 +12,18 @@ import { Layer } from "leaflet";
 import * as geojson from "geojson";
 import { TrashcanMap } from "@/app/maps/TrashcanMap";
 
+import AirTrouble from "../data/trouble_with_air_changed.json";
+
 const MainMap = () => {
   const [displayParkingSpaces, setDisplayParkingSpaces] =
     useState<boolean>(false);
 
-  const [selectedFeature, setSelectedFeature] =
-    useState<geojson.Feature | null>(null);
   const [displayDistrictSpaces, setDisplayDistrictSpaces] =
     useState<boolean>(false);
+
+  const [displaySentiment, setDisplaySentiment] = useState<boolean>(false);
+  const [highlightedDistricts, setHighlightedDistricts] = useState<any>([]);
+
   const [displayPollutants, setDisplayPollutants] = useState<boolean>(false);
   const [displayPM1, setDisplayPM1] = useState<boolean>(true);
   const [displayPM25, setDisplayPM25] = useState<boolean>(true);
@@ -29,21 +33,42 @@ const MainMap = () => {
 
   const [displayTrashcans, setDisplayTrashcans] = useState<boolean>(false);
 
-  const onEachFeature = (feature: geojson.Feature, layer: Layer) => {
-    layer.on({
-      click: (_) => {
-        setSelectedFeature(feature);
-      },
+  useEffect(() => {
+    AirTrouble.forEach((element) => {
+      setHighlightedDistricts((prev: any) => [
+        ...prev,
+        [element.Buurten, element["heeft last van vervuilde lucht %|2023"]],
+      ]);
     });
-  };
+  }, []);
 
-  const style = (feature: any) => {
+  const style = (feature: geojson.Feature) => {
+    const district = feature.properties?.name;
+    const highlightedDistrict = highlightedDistricts.find(
+      (districtData: any) => districtData[0] === district
+    );
+    const isHighlighted = !!highlightedDistrict;
+    const pol = isHighlighted ? highlightedDistrict[1] : 0;
+    console.log(pol);
+    const amountOfRed = 255;
+    const amountOfGreen = 255 - pol * 2.5;
+    const amountOfBlue = 255 - pol * 2.5;
+
+    if (displaySentiment == false) {
+      return {
+        fillColor: "blue",
+        weight: 1,
+        opacity: 1,
+        color: "white",
+        fillOpacity: 0.5,
+      };
+    }
     return {
-      fillColor: feature === selectedFeature ? "red" : "blue",
+      fillColor: `rgb(${amountOfRed}, ${amountOfGreen}, ${amountOfBlue})`,
       weight: 1,
       opacity: 1,
       color: "white",
-      fillOpacity: 0.5,
+      fillOpacity: 0.7,
     };
   };
 
@@ -56,6 +81,12 @@ const MainMap = () => {
           display_name="display districts"
           get={displayDistrictSpaces}
           set={setDisplayDistrictSpaces}
+        />
+        <OptionsButton
+          id="display sentiment"
+          display_name="display sentiment"
+          get={displaySentiment}
+          set={setDisplaySentiment}
         />
         <OptionsButton
           id="display parking spaces"
@@ -128,11 +159,7 @@ const MainMap = () => {
           )}
           {displayTrashcans && <TrashcanMap />}
           {displayDistrictSpaces && geoJsonData && (
-            <GeoJSON
-              data={geoJsonData as any}
-              style={style}
-              onEachFeature={onEachFeature}
-            />
+            <GeoJSON data={geoJsonData as any} style={style} />
           )}
         </MapContainer>
       </div>
